@@ -1,0 +1,26 @@
+.outlet {
+  overflow: auto;
+  height: 100vh;
+}
+
+.fabContainer {
+  bottom: 7rem;
+  right: 3rem;
+  z-index: 999;
+  position: fixed;
+}
+
+.fab {
+  width: 3.7rem;
+  height: 3.7rem;
+  animation: opacity 2000ms ease-out forwards;
+  color: #31446b;
+  border: 0.05rem solid;
+  background-color: #dfe5eb;
+  box-shadow: 0 0.15rem 0.5rem;
+}
+.fab:hover {
+  border-radius: 25%;
+  color: #4b4f55;
+  background-color: #dee5ef;
+}
