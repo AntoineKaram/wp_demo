@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { scrollToTop } from "../../helper";
 import { uiActions } from "../../store/ui-slice";
-import Tooltip from "../../components/Tooltip/Tooltip";
+import Tooltip from "../../components/tooltip/Tooltip";
 import { StoreDispatch, StoreState } from "../../store";
 
 import classes from "./Root.module.css";

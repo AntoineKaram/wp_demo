@@ -8,6 +8,7 @@ import Root from "./pages/root/Root";
 import Loader from "./pages/loader/Loader";
 import ErrorPage from "./pages/error/ErrorPage";
 import HomePage from "./pages/home/HomePage";
+import Dashboard from "./pages/dashboard/Dashboard";
 
 const App: React.FC = () => {
   const isLoading = useSelector((state: StoreState) => state.ui.isLoading);
@@ -22,6 +23,10 @@ const App: React.FC = () => {
           {
             index: true,
             element: <HomePage />,
+          },
+          {
+            path: "dashboard",
+            element: <Dashboard />,
           },
         ],
       },

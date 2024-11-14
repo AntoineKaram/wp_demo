@@ -10,22 +10,60 @@ export interface Supplier {
 
 export const apiService = {
   getSuppliers: async (): Promise<Supplier[]> => {
-    const response = await axios.get(`${API_BASE_URL}/data-service/method/suppliers`);
+    const response = await axios.get(
+    `${API_BASE_URL}/suppliers`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+
+      }
+    );
     return response.data;
   },
   getSupplierById: async (id: string): Promise<Supplier> => {
-    const response = await axios.get(`${API_BASE_URL}/data-service/method/suppliers/${id}`);
+    const response = await axios.get(
+      `${API_BASE_URL}/suppliers/${id}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
     return response.data;
   },
   createSupplier: async (supplier: Omit<Supplier, "id">): Promise<Supplier> => {
-    const response = await axios.post(`${API_BASE_URL}/data-service/method/suppliers`, supplier);
+    const response = await axios.post(
+      `${API_BASE_URL}/suppliers`,
+      supplier,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
     return response.data;
   },
-  updateSupplier: async (id: string, supplier: Partial<Supplier>): Promise<Supplier> => {
-    const response = await axios.put(`${API_BASE_URL}/data-service/method/suppliers/${id}`, supplier);
+  updateSupplier: async (
+    id: string,
+    supplier: Partial<Supplier>
+  ): Promise<Supplier> => {
+    const response = await axios.put(
+      `${API_BASE_URL}/suppliers/${id}`,
+      supplier,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
     return response.data;
   },
   deleteSupplier: async (id: string): Promise<void> => {
-    await axios.delete(`${API_BASE_URL}/data-service/method/suppliers/${id}`);
+    await axios.delete(`${API_BASE_URL}/suppliers/${id}`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
   },
 };
