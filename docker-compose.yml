@@ -11,7 +11,7 @@ services:
       - wp-network
     depends_on:
       - postgres
-    command: [ "npm", "start" ]
+    command: ["npm", "start"]
 
   api-service:
     build:
@@ -21,12 +21,13 @@ services:
     networks:
       - wp-network
     environment:
-      - DAPR_HTTP_PORT=3500
-      - DAPR_HTTP_HOST=dapr
+      - DAPR_HTTP_PORT=3501
+      - DAPR_HTTP_HOST=data-service-dapr
     depends_on:
       - data-service
+    command: ["npm", "start"]
 
-  dapr:
+  data-service-dapr:
     image: daprio/dapr:1.14.4
     command:
       - "./daprd"
@@ -37,17 +38,46 @@ services:
       - "--app-channel-address"
       - "data-service"
       - "--dapr-http-port"
-      - "3500"
+      - "3501"
       - "--dapr-grpc-port"
       - "50001"
       - "--config"
       - "/dapr/config/config.yaml"
     ports:
-      - "3500:3500"
+      - "3501:3501"
       - "50001:50001"
     environment:
-      - DAPR_HTTP_PORT=3500
+      - DAPR_HTTP_PORT=3501
       - DAPR_GRPC_PORT=50001
+    networks:
+      - wp-network
+    volumes:
+      - ./Dapr:/dapr/config
+    depends_on:
+      - data-service
+
+  api-service-dapr:
+    image: daprio/dapr:1.14.4
+    command:
+      - "./daprd"
+      - "--app-id"
+      - "api-service"
+      - "--app-port"
+      - "3002"
+      - "--app-channel-address"
+      - "api-service"
+      - "--dapr-http-port"
+      - "3502"
+      - "--dapr-grpc-port"
+      - "50001"
+      - "--config"
+      - "/dapr/config/config.yaml"
+    ports:
+      - "3502:3502"
+      - "50002:50002"
+    environment:
+      - DAPR_HTTP_PORT=3502
+      - DAPR_GRPC_PORT=50002
     networks:
       - wp-network
     volumes:

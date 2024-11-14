@@ -5,7 +5,7 @@ const app = express();
 app.use(bodyParser.json());
 
 // Routes
-app.use('/api/suppliers', supplierRoutes);
+app.use('/suppliers', supplierRoutes);
 
 // Start the server
 const PORT = process.env.PORT || 3002;
