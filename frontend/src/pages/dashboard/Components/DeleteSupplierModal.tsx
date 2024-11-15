@@ -28,7 +28,11 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
         <Button variant="secondary" onClick={onHide}>
           Cancel
         </Button>
-        <Button variant="danger" onClick={() => onConfirm(supplierToDelete.id)}>
+        <Button
+          variant="danger"
+          onClick={() => onConfirm(supplierToDelete.id)}
+          data-testid="confirm"
+        >
           Confirm
         </Button>
       </Modal.Footer>

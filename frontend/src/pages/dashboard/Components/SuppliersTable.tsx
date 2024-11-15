@@ -68,7 +68,7 @@ const SupplierTable: React.FC<Props> = ({
           </tr>
         </thead>
         <tbody className={classes.tableBody}>
-          {suppliers.map((supplier) => (
+          {suppliers.map((supplier, index) => (
             <tr className={classes.tableBodyRow} key={supplier.id}>
               <td className={classes.tableCell}>{supplier.vatNumber}</td>
               <td className={classes.tableCell}>{supplier.name}</td>
@@ -77,6 +77,7 @@ const SupplierTable: React.FC<Props> = ({
                   <button
                     className={`${classes.actionButton} ${classes.editButton}`}
                     onClick={() => handleEditSupplier(supplier)}
+                    data-testid={`edit supplier ${index}`}
                   >
                     <FaPen />
                   </button>
@@ -85,6 +86,7 @@ const SupplierTable: React.FC<Props> = ({
                   <button
                     className={`${classes.actionButton} ${classes.deleteButton}`}
                     onClick={() => confirmDeleteSupplier(supplier)}
+                    data-testid={`delete supplier ${index}`}
                   >
                     <FaTrash />
                   </button>
@@ -106,6 +108,7 @@ const SupplierTable: React.FC<Props> = ({
           variant="outline-primary"
           disabled={page === 1}
           onClick={handlePreviousPage}
+          data-testid="previous"
         >
           Previous
         </Button>
@@ -116,6 +119,7 @@ const SupplierTable: React.FC<Props> = ({
           variant="outline-primary"
           disabled={page === Math.ceil(totalCount / limit)}
           onClick={handleNextPage}
+          data-testid="next"
         >
           Next
         </Button>
