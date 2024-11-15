@@ -1,0 +1,106 @@
+.suppliersTableContainer {
+  width: 100%;
+  max-width: 70vw;
+  background-color: #ffffff;
+  border-radius: 0.8rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  padding: 0.5rem;
+  .suppliersTable {
+    width: 100%;
+    border: #343a40 1px;
+
+    .tableHeader {
+      padding: 0.5rem;
+
+      .tableHeaderCell {
+        color: #ffffff;
+        background-color: #343a40;
+        font-weight: bold;
+        text-align: left;
+        padding: 0.8rem;
+        font-size: 1rem;
+        border: 1px white solid;
+      }
+      .vatHeader {
+        width: 40%;
+      }
+      .nameHeader {
+        width: 40%;
+      }
+      .actionsHeader {
+        text-align: center;
+        width: 20%;
+      }
+    }
+    .tableBody {
+      .tableBodyRow:nth-child(odd) {
+        background-color: #f8f9fa;
+      }
+      .tableBodyRow:nth-child(even) {
+        background-color: #ffffff;
+      }
+      .tableBodyRow:hover {
+        background-color: #e9ecef;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+      .tableCell {
+        padding: 12px;
+        font-size: 0.95rem;
+        text-align: left;
+      }
+      .actionCell {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+
+        .actionButton {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 36px;
+          height: 36px;
+          border: none;
+          border-radius: 50%;
+          cursor: pointer;
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .actionButton:hover {
+          transform: scale(1.05);
+        }
+        .editButton {
+          background-color: #007bff;
+          color: #ffffff;
+        }
+        .editButton:hover {
+          background-color: #0056b3;
+        }
+        .deleteButton {
+          background-color: #dc3545;
+          color: #ffffff;
+        }
+        .deleteButton:hover {
+          background-color: #a71d2a;
+        }
+      }
+    }
+    .emptyState {
+      text-align: center;
+      font-size: 1rem;
+      font-weight: bold;
+      padding: 20px;
+      text-align: center;
+    }
+  }
+
+  .paginationControls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+  }
+
+  .paginationControls span {
+    font-weight: bold;
+  }
+}

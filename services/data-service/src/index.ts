@@ -3,7 +3,11 @@ import bodyParser from 'body-parser';
 import { addSupplier } from './commands/addSupplier';
 import { updateSupplier } from './commands/updateSupplier';
 import { deleteSupplier } from './commands/deleteSupplier';
-import { getSuppliers, getSupplierById } from './queries/getSupplier';
+import {
+  getSuppliers,
+  getSupplierById,
+  getSuppliersCount,
+} from './queries/getSupplier';
 
 const app = express();
 app.use(bodyParser.json());
@@ -14,7 +18,12 @@ app.get('/suppliers', async (req: Request, res: Response) => {
   const { page = 1, limit = 10 } = req.query;
   const skip = (Number(page) - 1) * Number(limit);
   const suppliers = await getSuppliers(Number(limit), skip);
-  res.json(suppliers);
+  const totalCount = await getSuppliersCount();
+  const result = {
+    data: suppliers,
+    totalCount: totalCount,
+  };
+  res.json(result);
 });
 
 app.get(

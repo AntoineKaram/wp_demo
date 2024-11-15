@@ -1,0 +1,49 @@
+.modalHeader {
+  border-bottom: none;
+  .modalTitle {
+    font-weight: 600;
+    font-size: 1.5rem;
+    color: #343a40;
+  }
+}
+
+.modalBody {
+  padding: 1.5rem;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+
+  .formLabel {
+    font-weight: 500;
+    color: #343a40;
+  }
+
+  .formControl {
+    border-radius: 8px;
+    padding: 0.75rem;
+    font-size: 1rem;
+  }
+
+  .errorText {
+    color: #dc3545;
+    font-size: 0.875rem;
+  }
+
+  .buttonContainer {
+    text-align: right;
+    margin-top: 1.5rem;
+    .saveButton {
+      background-color: #6f42c1;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      font-weight: 600;
+      font-size: 1rem;
+      border-radius: 8px;
+      transition: background-color 0.3s ease;
+    }
+
+    .saveButton:hover {
+      background-color: #5930a8;
+    }
+  }
+}

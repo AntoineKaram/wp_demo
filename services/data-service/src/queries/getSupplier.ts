@@ -8,6 +8,10 @@ export async function getSuppliers(take: number, skip: number) {
   });
 }
 
+export async function getSuppliersCount() {
+  return prisma.supplier.count();
+}
+
 export async function getSupplierById(id: string) {
   return prisma.supplier.findUnique({
     where: { id },

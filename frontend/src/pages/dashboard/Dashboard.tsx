@@ -1,162 +1,133 @@
-import React, { useState, useEffect } from "react";
-import { Button, Table, Container, Modal, Form } from "react-bootstrap";
+import React, { useState, useEffect, useCallback, Fragment } from "react";
 
 import { apiService, Supplier } from "../../services/apiService";
 
 import classes from "./Dashboard.module.css";
+import SupplierFormModal from "./Components/SupplierFormModal";
+import SuppliersTable from "./Components/SuppliersTable";
+import { Link } from "react-router-dom";
+import { FaArrowLeft } from "react-icons/fa6";
+import Loader from "../loader/Loader";
 
 const Dashboard: React.FC = () => {
-  const [suppliers, setSuppliers] = useState<Supplier[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [totalCount, setTotalCount] = useState(0);
+  const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const [selectedSupplier, setSelectedSupplier] = useState<Supplier | null>(
     null
   );
-  const [newSupplier, setNewSupplier] = useState({ name: "", vatNumber: "" });
 
-  useEffect(() => {
-    fetchSuppliers();
+  const handleAddSupplier = useCallback(() => {
+    setSelectedSupplier(null);
+    setShowModal(true);
   }, []);
 
-  const fetchSuppliers = async () => {
-    try {
-      const data = await apiService.getSuppliers();
-      setSuppliers(data);
-    } catch (error) {
-      console.error("Error fetching suppliers:", error);
-    }
-  };
-
-  const handleAddSupplier = () => {
-    setSelectedSupplier(null);
-    setNewSupplier({ name: "", vatNumber: "" });
-    setShowModal(true);
-  };
-
-  const handleEditSupplier = (supplier: Supplier) => {
+  const handleEditSupplier = useCallback((supplier: Supplier) => {
     setSelectedSupplier(supplier);
-    setNewSupplier({ name: supplier.name, vatNumber: supplier.vatNumber });
     setShowModal(true);
-  };
+  }, []);
 
-  const handleDeleteSupplier = async (supplierId: string) => {
-    if (window.confirm("Are you sure you want to delete this supplier?")) {
+  const handleFormSubmit = useCallback(
+    (supplier: Supplier, state: "add" | "update") => {
       try {
-        await apiService.deleteSupplier(supplierId);
+        if (state == "add") {
+          apiService.createSupplier(supplier).then((data) => {
+            setSuppliers((prev) => [...prev, data]);
+          });
+        } else if (state == "update") {
+          apiService.updateSupplier(supplier.id, supplier).then((data) => {
+            setSuppliers((prev) =>
+              prev.map((prevSupplier) =>
+                prevSupplier.id === supplier.id ? data : prevSupplier
+              )
+            );
+          });
+        }
+      } catch (error) {
+        console.error(`Error while perfoming supplier ${state}`, error);
+      } finally {
+        setShowModal(false);
+      }
+    },
+    []
+  );
+
+  const handleFetchSuppliers = useCallback((page?: number, limit?: number) => {
+    apiService
+      .getSuppliers(page, limit)
+      .then((data) => {
+        setSuppliers(data.data);
+        setTotalCount(data.totalCount);
+      })
+      .catch((error) => {
+        console.error("Error fetching suppliers:", error);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, []);
+
+  useEffect(() => {
+    handleFetchSuppliers();
+  }, [handleFetchSuppliers]);
+
+  const handleDeleteSupplier = useCallback((supplierId: string) => {
+    apiService
+      .deleteSupplier(supplierId)
+      .then(() =>
         setSuppliers((prev) =>
           prev.filter((supplier) => supplier.id !== supplierId)
-        );
-      } catch (error) {
+        )
+      )
+      .catch((error) => {
         console.error("Error deleting supplier:", error);
-      }
-    }
-  };
-
-  const handleFormSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      if (selectedSupplier) {
-        const updatedSupplier = await apiService.updateSupplier(
-          selectedSupplier.id,
-          newSupplier
-        );
-        setSuppliers((prev) =>
-          prev.map((supplier) =>
-            supplier.id === selectedSupplier.id ? updatedSupplier : supplier
-          )
-        );
-      } else {
-        const addedSupplier = await apiService.createSupplier(newSupplier);
-        setSuppliers((prev) => [...prev, addedSupplier]);
-      }
-      setShowModal(false);
-    } catch (error) {
-      console.error("Error saving supplier:", error);
-    }
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setNewSupplier((prev) => ({ ...prev, [name]: value }));
-  };
+      });
+  }, []);
 
   return (
-    <Container className={`py-4 ${classes.dashboard}`}>
-      <h1 className={`text-center mb-4${classes.dashboardTitle}`}>Suppliers</h1>
-      <div className="text-end mb-3">
-        <Button className={classes.addButton} onClick={handleAddSupplier}>
-          Add New Supplier
-        </Button>
-      </div>
-      <div className={classes.tableContainer}>
-        <Table striped bordered hover responsive className={classes.table}>
-          <thead>
-            <tr>
-              <th>VAT Number</th>
-              <th>Name</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {suppliers.map((supplier) => (
-              <tr key={supplier.id}>
-                <td>{supplier.vatNumber}</td>
-                <td>{supplier.name}</td>
-                <td>
-                  <Button
-                    className="edit me-2"
-                    onClick={() => handleEditSupplier(supplier)}
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    className="delete"
-                    onClick={() => handleDeleteSupplier(supplier.id)}
-                  >
-                    Delete
-                  </Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
-      </div>
+    <div className={classes.dashboard}>
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <Fragment>
+          <Link to="/" className={classes.backButton}>
+            <FaArrowLeft /> Back to Home
+          </Link>
+          <div className={classes.dashboardHeader}>
+            <h1 className={classes.dashboardTitle}>Suppliers</h1>
+            <p className={classes.dashboardSubtitle}>
+              Manage your suppliers, collaborate effectively, and track their
+              details.
+            </p>
+            <button
+              className={classes.addButton}
+              onClick={() => handleAddSupplier()}
+            >
+              + Add New Supplier
+            </button>
+          </div>
 
-      <Modal show={showModal} onHide={() => setShowModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>
-            {selectedSupplier ? "Edit Supplier" : "Add Supplier"}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form onSubmit={handleFormSubmit}>
-            <Form.Group controlId="formSupplierName" className="mb-3">
-              <Form.Label>Name</Form.Label>
-              <Form.Control
-                type="text"
-                name="name"
-                value={newSupplier.name}
-                onChange={handleInputChange}
-                required
-              />
-            </Form.Group>
-            <Form.Group controlId="formSupplierVatNumber" className="mb-3">
-              <Form.Label>VAT Number</Form.Label>
-              <Form.Control
-                type="text"
-                name="vatNumber"
-                value={newSupplier.vatNumber}
-                onChange={handleInputChange}
-                maxLength={8}
-                required
-              />
-            </Form.Group>
-            <Button variant="primary" type="submit">
-              Save
-            </Button>
-          </Form>
-        </Modal.Body>
-      </Modal>
-    </Container>
+          <SuppliersTable
+            suppliers={suppliers}
+            totalCount={totalCount}
+            handleFetchSuppliers={handleFetchSuppliers}
+            handleEditSupplier={handleEditSupplier}
+            handleDeleteSupplier={handleDeleteSupplier}
+          />
+
+          <SupplierFormModal
+            show={showModal}
+            selectedSupplier={selectedSupplier}
+            onHide={() => {
+              setShowModal(false);
+              setSelectedSupplier(null);
+            }}
+            onSubmit={handleFormSubmit}
+          />
+        </Fragment>
+      )}
+    </div>
   );
 };
 
